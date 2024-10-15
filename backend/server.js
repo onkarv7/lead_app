@@ -46,7 +46,9 @@ dotenv.config();
 const app = express();
 
 // Enable CORS for the frontend
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  cors({ origin: "https://lead-app-bpqj.vercel.app/", credentials: true })
+);
 
 // Middleware
 app.use(express.json());

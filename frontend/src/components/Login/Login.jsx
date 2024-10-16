@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,9 +14,8 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://lead-app-wz8g.onrender.com/auth/register",
-        // "http://localhost:4000/auth/register",
-
+        // "http://localhost:4000/auth/login",
+        "https://lead-app-wz8g.onrender.com/auth/login",
         {
           method: "POST",
           headers: {
@@ -30,21 +28,21 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage("User registered successfully!");
-        console.log("JWT Token:", data.token);
-        navigate("/login");
+        setMessage("Login successful!");
+        localStorage.setItem("token", data.token);
+        navigate("/leads");
       } else {
         setMessage(data.message);
       }
     } catch (error) {
-      console.error("Error registering user:", error);
+      console.error("Error logging in:", error);
     }
   };
 
   return (
-    <div className="min-h-screen flex min-w-screen items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded shadow-md">
-        <h2 className="text-2xl font-bold mb-6">Register Page</h2>
+        <h2 className="text-2xl font-bold mb-6">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700">
@@ -76,11 +74,11 @@ const Register = () => {
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
-            Register
+            Login
           </button>
         </form>
         {message && (
-          <div className="mt-4 p-4 bg-green-100 text-green-700 rounded">
+          <div className="mt-4 p-4 bg-red-100 text-red-700 rounded">
             {message}
           </div>
         )}
@@ -89,4 +87,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

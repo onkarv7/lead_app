@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from "react";
-import leadsData from "../../data/leadsData"; // JSON with leads data
+import leadsData from "../../data/leadsData"; // Import the leads JSON file
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Leads = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [isPaid, setIsPaid] = useState(false); // Payment status
+  const [isPaid, setIsPaid] = useState(false);
   const usersPerPage = 7;
 
-  // Pagination
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentLeads = leadsData.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(leadsData.length / usersPerPage);
+  const email = localStorage.getItem("email");
 
-  const amount = 500;
-  const currency = "INR";
-  const receiptId = "receipt#1";
+  const navigate = useNavigate();
 
-  // Load Razorpay script dynamically
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -24,14 +19,29 @@ const Leads = () => {
     document.body.appendChild(script);
   }, []);
 
-  // Payment Handler
+  useEffect(() => {
+    if (!email) {
+      navigate("/login");
+    }
+  }, [email, navigate]);
+
+  // Calculate the indices of the leads to show on the current page
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentLeads = leadsData.slice(indexOfFirstUser, indexOfLastUser);
+
+  const totalPages = Math.ceil(leadsData.length / usersPerPage);
+
+  const amount = 500;
+  const currency = "INR";
+  const receiptId = "qwsaq1";
+
   const paymentHandler = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(
-      // "http://localhost:4000/order"
-      "https://lead-app-wz8g.onrender.com/order",
-      {
+    try {
+      // Create order on the server
+      const response = await fetch("http://localhost:4000/order", {
         method: "POST",
         body: JSON.stringify({
           amount,
@@ -41,80 +51,126 @@ const Leads = () => {
         headers: {
           "Content-Type": "application/json",
         },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create Razorpay order");
       }
-    );
-    const order = await response.json();
 
-    if (!order || !order.id) {
-      alert("Failed to create order. Please try again.");
-      return;
-    }
+      const order = await response.json();
+      console.log(order);
 
-    var options = {
-      key: "rzp_test_49G8N3nbVhELRI",
-      amount: order.amount,
-      currency,
-      name: "My Company",
-      description: "Lead Data Access",
-      order_id: order.id, // Razorpay Order ID
-      handler: async function (response) {
-        const validationData = {
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-        };
+      var options = {
+        key: "rzp_test_49G8N3nbVhELRI",
+        amount,
+        currency,
+        name: "SmallBigGrowth",
+        description: "Business Transaction",
+        image: "https://example.com/your_logo",
+        order_id: order.id, // Razorpay Order ID
+        handler: async function (response) {
+          const body = {
+            ...response,
+          };
 
-        const validateRes = await fetch(
-          // "http://localhost:4000/order/validate",
-          "https://lead-app-wz8g.onrender.com/order/validate",
-          {
-            method: "POST",
-            body: JSON.stringify(validationData),
-            headers: {
-              "Content-Type": "application/json",
-            },
+          // Validate payment on the server
+          const validateRes = await fetch(
+            "http://localhost:4000/order/validate",
+            {
+              method: "POST",
+              body: JSON.stringify(body),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const jsonRes = await validateRes.json();
+          console.log(jsonRes);
+
+          if (jsonRes.msg === "Payment success") {
+            setIsPaid(true);
+            toast.success("Payment successful");
+          } else {
+            toast.error("Payment validation failed");
           }
-        );
-        const validationResponse = await validateRes.json();
-        if (validationResponse.msg === "Payment success") {
-          setIsPaid(true); // Set payment status to true
-        }
-      },
-      prefill: {
-        name: "Onkar",
-        email: "Onkar@example.com",
-        contact: "9860430009",
-      },
-      theme: {
-        color: "#3399cc",
-      },
-    };
-    var rzp1 = new window.Razorpay(options);
-    rzp1.on("payment.failed", function (response) {
-      alert(response.error.description);
-    });
-    rzp1.open();
+        },
+        prefill: {
+          name: "Web Dev Matrix",
+          email: "webdevmatrix@example.com",
+          contact: "9860430009",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      var rzp1 = new window.Razorpay(options);
+      rzp1.on("payment.failed", function (response) {
+        toast.error(response.error.description);
+      });
+      rzp1.open();
+    } catch (error) {
+      console.error("Error in payment handler:", error);
+      toast.error("Payment initiation failed. Please try again.");
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
+    toast.success("Logged out successfully");
+    navigate("/login");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center">
-      <h1 className="text-3xl font-bold my-8">Lead List</h1>
+      <nav className="bg-blue-500 w-full px-4 py-3 flex justify-between items-center shadow-md">
+        <div className="text-white text-2xl font-bold">SmallBigGrowth</div>
+        <div className="flex items-center gap-8">
+          {email && (
+            <div className="text-white text-md hidden md:block">
+              <strong>{email}</strong>
+            </div>
+          )}
 
-      {/* Payment Button */}
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="bg-red-400 text-white px-4 py-2 rounded-md hover:bg-red-600"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+
       {!isPaid && (
         <button
           onClick={paymentHandler}
-          className="mb-6 bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600"
+          className="mb-6 mt-4 bg-green-500 text-white px-6 py-3 rounded-md hover:bg-green-600"
         >
           Pay to Reveal Emails
         </button>
       )}
 
-      {/* Lead List */}
-      <ul className="w-full max-w-4xl mx-auto">
+      <div className="w-full flex flex-wrap gap-4 justify-center">
         {currentLeads.map((lead, index) => (
-          <li key={index} className="bg-white p-6 mb-4 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold">
+          <div
+            key={index}
+            className="bg-white w-[20%] p-6 mb-4 mt-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+          >
+            <h2 className="text-xl  font-semibold">
               {lead.firstName} {lead.lastName}
             </h2>
             <p className="text-gray-600">Company: {lead.company}</p>
@@ -133,22 +189,20 @@ const Leads = () => {
               <p className="mt-4 text-gray-600">Email: {lead.email}</p>
             ) : (
               <button
-                onClick={() => alert("Please pay to reveal the email!")}
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                onClick={() => toast.error(" Pay to Reveal Emails")}
+                className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
               >
                 Reveal Email
               </button>
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
 
-      {/* Pagination */}
+      {/* Pagination Controls */}
       <div className="flex justify-between items-center mt-8 w-full max-w-4xl mx-auto">
         <button
-          onClick={() =>
-            setCurrentPage(currentPage > 1 ? currentPage - 1 : currentPage)
-          }
+          onClick={handlePrevPage}
           disabled={currentPage === 1}
           className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 disabled:opacity-50"
         >
@@ -158,11 +212,7 @@ const Leads = () => {
           Page {currentPage} of {totalPages}
         </span>
         <button
-          onClick={() =>
-            setCurrentPage(
-              currentPage < totalPages ? currentPage + 1 : currentPage
-            )
-          }
+          onClick={handleNextPage}
           disabled={currentPage === totalPages}
           className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 disabled:opacity-50"
         >

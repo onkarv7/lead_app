@@ -94,10 +94,10 @@ const app = express();
 // CORS for the frontend deployment (localhost)
 app.use(
   cors({
-    origin:
-      //  "http://localhost:5173",
+    origin: "http://localhost:5173",
 
-      "https://lead-app-bpqj.vercel.app/",
+    // "https://lead-app-bpqj.vercel.app/",
+
     credentials: true,
   })
 );

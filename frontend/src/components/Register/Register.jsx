@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -15,8 +16,8 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://lead-app-wz8g.onrender.com/auth/register",
-        // "http://localhost:4000/auth/register",
+        // "https://lead-app-wz8g.onrender.com/auth/register",
+        "http://localhost:4000/auth/register",
 
         {
           method: "POST",
@@ -31,7 +32,9 @@ const Register = () => {
 
       if (response.ok) {
         setMessage("User registered successfully!");
+        toast.success("Successfully toasted!");
         console.log("JWT Token:", data.token);
+
         navigate("/login");
       } else {
         setMessage(data.message);
@@ -42,12 +45,12 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex min-w-screen items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md">
-        <h2 className="text-2xl font-bold mb-6">Register Page</h2>
+    <div className="min-h-screen w-full flex  items-center justify-center bg-gray-200">
+      <div className="bg-white md:w-[30%] p-14 rounded shadow-md">
+        <h2 className="text-2xl text-center  font-bold mb-10">Register </h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700">
+          <div className="mb-6">
+            <label htmlFor="email" className="block text-gray-700 mb-4">
               Email
             </label>
             <input
@@ -59,8 +62,8 @@ const Register = () => {
               className="w-full px-3 py-2 border rounded"
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700">
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-gray-700 mb-4">
               Password
             </label>
             <input
@@ -74,7 +77,7 @@ const Register = () => {
           </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded mt-4 f"
           >
             Register
           </button>
@@ -84,6 +87,12 @@ const Register = () => {
             {message}
           </div>
         )}
+        <div className="mt-8 text-gray-500">
+          Already Register{" "}
+          <Link className="text-gray-400 ml-1 underline" to="/login">
+            Login in
+          </Link>
+        </div>
       </div>
     </div>
   );

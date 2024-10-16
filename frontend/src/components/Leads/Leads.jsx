@@ -51,7 +51,7 @@ const Leads = () => {
     }
 
     var options = {
-      // key ,
+      key: "rzp_test_49G8N3nbVhELRI",
       amount: order.amount,
       currency,
       name: "My Company",

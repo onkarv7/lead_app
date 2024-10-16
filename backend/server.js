@@ -85,6 +85,7 @@ const cors = require("cors");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const dotenv = require("dotenv");
+const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 
@@ -111,7 +112,7 @@ app.use(
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+app.use("/auth", authRoutes);
 // Razorpay Order Route
 app.post("/order", async (req, res) => {
   try {

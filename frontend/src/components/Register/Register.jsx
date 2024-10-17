@@ -16,8 +16,8 @@ const Register = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        // "https://lead-app-wz8g.onrender.com/auth/register",
-        "http://localhost:4000/auth/register",
+        "https://lead-app-wz8g.onrender.com/auth/register",
+        // "http://localhost:4000/auth/register",
 
         {
           method: "POST",

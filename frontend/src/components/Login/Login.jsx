@@ -111,19 +111,24 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:4000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        // "http://localhost:4000/auth/login"
+        "https://lead-app-wz8g.onrender.com/auth/login",
+
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
         setMessage("Login successful!");
-        localStorage.setItem("token", data.token); // Store the token
+        localStorage.setItem("token", data.token);
         localStorage.setItem("email", formData.email);
 
         toast.custom((t) => (
@@ -162,7 +167,7 @@ const Login = () => {
           </div>
         ));
 
-        navigate("/leads"); // Redirect to leads page
+        navigate("/leads");
       } else {
         setMessage(data.message);
       }

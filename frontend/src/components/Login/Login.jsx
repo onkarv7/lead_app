@@ -213,7 +213,7 @@ const Login = () => {
 
         <div className="mt-8 text-gray-500">
           Not Registered?{" "}
-          <Link className="text-gray-400 ml-1 underline" to="/register">
+          <Link className="text-gray-400 ml-1 underline" to="/">
             Register here
           </Link>
         </div>

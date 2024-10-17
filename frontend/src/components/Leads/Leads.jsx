@@ -41,17 +41,21 @@ const Leads = () => {
 
     try {
       // Create order on the server
-      const response = await fetch("http://localhost:4000/order", {
-        method: "POST",
-        body: JSON.stringify({
-          amount,
-          currency,
-          receipt: receiptId,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        // "http://localhost:4000/order"
+        "https://lead-app-wz8g.onrender.com/order",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            amount,
+            currency,
+            receipt: receiptId,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to create Razorpay order");
@@ -75,7 +79,8 @@ const Leads = () => {
 
           // Validate payment on the server
           const validateRes = await fetch(
-            "http://localhost:4000/order/validate",
+            // "http://localhost:4000/order/validate"
+            "https://lead-app-wz8g.onrender.com/order/validate",
             {
               method: "POST",
               body: JSON.stringify(body),

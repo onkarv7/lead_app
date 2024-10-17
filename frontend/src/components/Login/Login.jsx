@@ -136,7 +136,6 @@
 
 // export default Login;
 
-// src/components/Login.js
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, clearMessage } from "../../redux/slice/authSlice";
@@ -211,6 +210,7 @@ const Login = () => {
             {message}
           </div>
         )}
+
         <div className="mt-8 text-gray-500">
           Not Registered?{" "}
           <Link className="text-gray-400 ml-1 underline" to="/register">

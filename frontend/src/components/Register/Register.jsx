@@ -106,7 +106,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser, clearMessage } from "../../redux/slice/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Register = () => {
@@ -175,6 +175,13 @@ const Register = () => {
             {message}
           </div>
         )}
+
+        <div className="mt-8 text-gray-500">
+          Already Registered?{" "}
+          <Link className="text-gray-400 ml-1 underline" to="/login">
+            Login here
+          </Link>
+        </div>
       </div>
     </div>
   );

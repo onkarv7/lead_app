@@ -8,9 +8,9 @@ const clientId =
   "957460743716-bsapdiebst9f2gbu0ebh395jokutbscn.apps.googleusercontent.com";
 
 createRoot(document.getElementById("root")).render(
-  <GoogleOAuthProvider clientId={clientId}>
-    <Provider store={store}>
+  <Provider store={store}>
+    <GoogleOAuthProvider clientId={clientId}>
       <App />
-    </Provider>
-  </GoogleOAuthProvider>
+    </GoogleOAuthProvider>
+  </Provider>
 );

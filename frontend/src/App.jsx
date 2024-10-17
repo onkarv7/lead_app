@@ -6,7 +6,7 @@ import Leads from "./components/Leads/Leads";
 import PrivateRoute from "./components/PrivateRoute";
 import "./App.css";
 
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
       <div className="App">
         <Toaster position="bottom-right" reverseOrder={false} />
         <Routes>
-          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route
             path="/leads"

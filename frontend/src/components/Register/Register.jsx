@@ -46,8 +46,9 @@ const Register = () => {
 
   return (
     <div className="min-h-screen w-full flex  items-center justify-center bg-gray-200">
-      <div className="bg-white md:w-[30%] p-14 rounded shadow-md">
+      <div className="bg-white md:w-[40%] p-14 rounded shadow-md">
         <h2 className="text-2xl text-center  font-bold mb-10">Register </h2>
+
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
             <label htmlFor="email" className="block text-gray-700 mb-4">
@@ -87,7 +88,8 @@ const Register = () => {
             {message}
           </div>
         )}
-        <div className="mt-8 text-gray-500">
+
+        <div className="mt-6 text-gray-500">
           Already Register{" "}
           <Link className="text-gray-400 ml-1 underline" to="/login">
             Login in

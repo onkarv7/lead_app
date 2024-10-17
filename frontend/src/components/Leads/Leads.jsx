@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import leadsData from "../../data/leadsData"; // Import the leads JSON file
+import leadsData from "../../data/leadsData";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -25,7 +25,6 @@ const Leads = () => {
     }
   }, [email, navigate]);
 
-  // Calculate the indices of the leads to show on the current page
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentLeads = leadsData.slice(indexOfFirstUser, indexOfLastUser);
@@ -40,7 +39,6 @@ const Leads = () => {
     e.preventDefault();
 
     try {
-      // Create order on the server
       const response = await fetch(
         // "http://localhost:4000/order"
         "https://lead-app-wz8g.onrender.com/order",
@@ -71,13 +69,12 @@ const Leads = () => {
         name: "SmallBigGrowth",
         description: "Business Transaction",
         image: "https://example.com/your_logo",
-        order_id: order.id, // Razorpay Order ID
+        order_id: order.id,
         handler: async function (response) {
           const body = {
             ...response,
           };
 
-          // Validate payment on the server
           const validateRes = await fetch(
             // "http://localhost:4000/order/validate"
             "https://lead-app-wz8g.onrender.com/order/validate",

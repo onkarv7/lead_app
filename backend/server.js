@@ -1,7 +1,7 @@
 
 const express = require("express");
 const mongoose = require("mongoose");
-// const cors = require("cors");
+const cors = require("cors");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const dotenv = require("dotenv");
@@ -21,6 +21,13 @@ const app = express();
 //     credentials: true,
 //   })
 // );
+
+
+app.use(cors({
+  origin: 'https://lead-application-two.vercel.app', 
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',        
+  credentials: true,                               
+}));
 
 // //  CORS for the frontend deployment
 // app.use(
